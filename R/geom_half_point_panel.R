@@ -98,7 +98,13 @@ GeomHalfPointPanel <- ggproto(
         ggplot2::resolution(data$y, zero = FALSE) * 0.4
     }
 
-    if (is(transformation, "PositionIdentity") || is(transformation, "PositionJitter")) {
+    # Practical test if ggplot2 is at version 4.x.x+
+    ggplot2_version_400 <- "class_ggplot" %in% getNamespaceExports("ggplot2")
+
+    if (
+      is(transformation, "PositionIdentity") ||
+      (is(transformation, "PositionJitter") && !ggplot2_version_400)
+    ) {
       trans_positions <- transformation$compute_layer(
         transformation_df,
         transformation_params
